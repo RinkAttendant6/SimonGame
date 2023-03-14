@@ -4,26 +4,27 @@ var userClickedPattern = [];
 var level = 0;
 var lastIndex = 0;
 
-$(document).keydown(function () {
+document.addEventListener('keydown', () => {
         if (level === 0) {
             nextSequence();       
         }
 });
 
-
-$(".btn").on("click", function(e) {
-    userChosenColour = this.id;
-    userClickedPattern.push(userChosenColour);
-    playSound(this.id);
-    animatePress(this.id);
-    lastIndex = userClickedPattern.length - 1;
-    checkAnswer(lastIndex)
-});
+for (var el of document.getElementsByClassName('btn')) {
+    el.addEventListener('click', (e) => {
+        userChosenColour = e.currentTarget.id;
+        userClickedPattern.push(userChosenColour);
+        playSound(e.currentTarget.id);
+        animatePress(e.currentTarget.id);
+        lastIndex = userClickedPattern.length - 1;
+        checkAnswer(lastIndex)
+    });
+}
 
 
 function nextSequence() {
     level = level + 1;
-    $("h1").text("Level "+ level);
+    document.querySelector('h1').textContent = "Level "+ level;
     randomNumber = Math.floor(Math.random() * 3) + 1;
     var randomChosenColour = buttonColours[randomNumber] ; 
     gamePattern.push(randomChosenColour);
@@ -34,14 +35,21 @@ function nextSequence() {
 function playSound(name) {
     var sound = new Audio("sounds/"+name+".mp3"); 
     sound.play();
-    $("#"+name).fadeOut(100).fadeIn(100);
+
+    var btn = document.getElementById(name);
+    var blink = () => {
+        btn.classList.remove('blinking');
+        btn.removeEventListener('animationend', blink);
+    };
+    btn.addEventListener('animationend', blink);
+    btn.classList.add('blinking');
 }
 
 function animatePress(currentColour) {
-    $("#"+currentColour).addClass("pressed");
+    document.getElementById(currentColour).classList.add('pressed');
 
-    setTimeout(function () {
-        $("#" + currentColour).removeClass("pressed");
+    setTimeout(() => {
+        document.getElementById(currentColour).classList.remove('pressed');
       }, 100);
 }
 
@@ -57,11 +65,11 @@ function checkAnswer(currentLevel) {
     } else {
         var gameOverSound = new Audio("sounds/wrong.mp3");
         gameOverSound.play();
-        $("body").addClass("game-over");
+        document.body.classList.add('game-over');
         setTimeout(function () {
-            $("body").removeClass("game-over");
+            document.body.classList.remove('game-over');
           }, 200);
-          $("h1").text("Game over, Press Any key to restart");
+          document.querySelector('h1').textContent = "Game over, Press Any key to restart";
           startOver();
     }
     
