@@ -26,6 +26,27 @@ body {
   border-radius: 20%;
 }
 
+.btn.blinking {
+  animation: 200ms ease-in-out blink;
+}
+
+@keyframes blink {
+  from {
+  opacity: 1;
+  border-color: black;
+  }
+
+  50% {
+  opacity: 0;
+  border-color: pink;
+  }
+
+  to {
+  opacity: 1;
+  border-color: black
+  }
+}
+
 .game-over {
   background-color: red;
   opacity: 0.8;
